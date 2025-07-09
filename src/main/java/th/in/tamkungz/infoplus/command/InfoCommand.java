@@ -7,6 +7,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import th.in.tamkungz.infoplus.api.SystemData;
@@ -20,34 +21,40 @@ public class InfoCommand {
         event.getDispatcher().register(
             Commands.literal("info")
                 .requires(source -> source.hasPermission(2))
+                
+                // /info system
                 .then(Commands.literal("system")
                     .executes(ctx -> sendSystemInfo(ctx, ctx.getSource().getPlayerOrException()))
-                    .then(Commands.argument("player", StringArgumentType.word())
+                    
+                    // /info system <player>
+                    .then(Commands.argument("player", EntityArgument.player())
                         .executes(ctx -> {
-                            String playerName = StringArgumentType.getString(ctx, "player");
-                            ServerPlayer player = ctx.getSource().getServer().getPlayerList().getPlayerByName(playerName);
-                            if (player != null) {
+                            try {
+                                ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
                                 return sendSystemInfo(ctx, player);
-                            } else {
-                                ctx.getSource().sendFailure(Component.literal("§c[InfoPlus] §rPlayer not found: " + playerName));
-                                LOGGER.warn("Player not found:" + playerName);
-                                return Command.SINGLE_SUCCESS;
+                            } catch (Exception e) {
+                                ctx.getSource().sendFailure(Component.literal("§c[InfoPlus] §rError: " + e.getMessage()));
+                                LOGGER.error("Error running /info system <player>", e);
+                                return 0;
                             }
                         })
                     )
                 )
+
+                // /info all
                 .then(Commands.literal("all")
                     .executes(ctx -> sendAllSystemInfo(ctx, ctx.getSource().getPlayerOrException()))
-                    .then(Commands.argument("player", StringArgumentType.word())
+                    
+                    // /info all <player>
+                    .then(Commands.argument("player", EntityArgument.player())
                         .executes(ctx -> {
-                            String playerName = StringArgumentType.getString(ctx, "player");
-                            ServerPlayer player = ctx.getSource().getServer().getPlayerList().getPlayerByName(playerName);
-                            if (player != null) {
+                            try {
+                                ServerPlayer player = EntityArgument.getPlayer(ctx, "player");
                                 return sendAllSystemInfo(ctx, player);
-                            } else {
-                                ctx.getSource().sendFailure(Component.literal("§c[InfoPlus] §rPlayer not found: " + playerName));
-                                LOGGER.warn("Player not found:" + playerName);
-                                return Command.SINGLE_SUCCESS;
+                            } catch (Exception e) {
+                                ctx.getSource().sendFailure(Component.literal("§c[InfoPlus] §rError: " + e.getMessage()));
+                                LOGGER.error("Error running /info all <player>", e);
+                                return 0;
                             }
                         })
                     )
