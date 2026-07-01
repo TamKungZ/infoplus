@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://tamkungz.github.io/droprateapi/Infoplus-shadow.png" width="200" />
+  <img src="https://pub-df28fb9f69aa4326a1c6e10fb1f2abdc.r2.dev/assets-image/infoplus/infoplus-icon-shadow.png" width="200" />
 </p>
 
 # InfoPlus
